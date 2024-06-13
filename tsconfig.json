@@ -18,9 +18,20 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./src/*"],
+      "auth": ["./auth"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "**/lib/*.ts",
+    ".next/types/**/*.ts",
+    "app/api/auth/[...nextauth]/route.ts",
+    "src/lib/site-config.ss"
+  ],
   "exclude": ["node_modules"]
 }
+
+//"pages/api/auth/.auth.ts"
