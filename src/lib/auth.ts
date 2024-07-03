@@ -22,6 +22,25 @@ export const getAuthSession = async (
   return session;
 };
 
+export const getRequiredAuthSession = async (
+  ...parameters: ParametersGetServerSession
+) => {
+  const session = await getServerSession(...parameters, authOptions);
+
+  if (!session?.user.id) {
+    throw new Error("Unauthorized");
+  }
+
+  return session as {
+    user: {
+      id: string;
+      email?: string;
+      image?: string;
+      name?: string;
+    };
+  };
+};
+
 export const authOptions: AuthOptions = {
   adapter: PrismaAdapter(prisma),
   theme: {
