@@ -30,9 +30,8 @@ export default async function CoursePage({
   };
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
-  const page = Number(searchParams.page ?? 1);
+  const page = Number(searchParams.page ?? 0);
   console.log(0, "page => ", page);
-  console.log(0, "searchParams => ", searchParams);
 
   const session = await getRequiredAuthSession();
 
@@ -41,6 +40,8 @@ export default async function CoursePage({
     userId: session.user.id,
     userPage: page,
   });
+
+  console.log(1, "course =>", course);
 
   return (
     <Layout>
