@@ -36,14 +36,11 @@ export const CourseForm = ({ defaultValue }: CourseFormProps) => {
   });
   const router = useRouter();
 
-  console.log(7, "defaultValue =>", defaultValue);
-
   return (
     <Form
       form={form}
       onSubmit={async (values) => {
         console.log(7, "Updating/Creating course...");
-        console.log(7, "values =>", values);
 
         const result = defaultValue?.id
           ? await courseActionEdit({
