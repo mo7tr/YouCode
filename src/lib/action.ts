@@ -39,7 +39,7 @@ export const authActionClient = authenticatedAction.use(async ({ next }) => {
   const user = session?.user;
   const userId = user?.id;
 
-  if (!session) {
+  if (!userId) {
     throw new ActionError("You must be logged in to perform this action");
   }
 

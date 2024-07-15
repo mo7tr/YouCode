@@ -16,7 +16,7 @@ import { Textarea } from "@/components/ui/textarea";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { courseActionEdit } from "./course.action";
+import { courseActionCreate, courseActionEdit } from "./course.action";
 import { CourseFormSchema } from "./course.schema";
 
 export type CourseFormProps = {
@@ -28,49 +28,57 @@ export type CourseFormProps = {
 export const CourseForm = ({ defaultValue }: CourseFormProps) => {
   const form = useZodForm({
     schema: CourseFormSchema,
-    defaultValues: defaultValue,
+    defaultValues: defaultValue || {
+      image: "",
+      name: "",
+      presentation: "",
+    },
   });
   const router = useRouter();
+
+  console.log(7, "defaultValue =>", defaultValue);
 
   return (
     <Form
       form={form}
       onSubmit={async (values) => {
-        if (defaultValue?.id) {
-          console.log(7, "Updating course...");
+        console.log(7, "Updating/Creating course...");
+        console.log(7, "values =>", values);
 
-          const result = await courseActionEdit({
-            courseId: defaultValue.id,
-            data: values,
-          });
-
-          console.log(7, "data =>", result?.data);
-          console.log(7, "serverError =>", result?.serverError);
-          console.log(7, "validationErrors =>", result?.validationErrors);
-
-          if (result?.data) {
-            toast.success(result.data);
-            router.push(`/admin/courses/${defaultValue.id}`);
-            router.refresh();
-            return;
-          }
-
-          if (result?.validationErrors) {
-            toast.error("Some error occurred", {
-              description: `Error with ${
-                Object.keys(result?.validationErrors)[0]
-              }`,
+        const result = defaultValue?.id
+          ? await courseActionEdit({
+              courseId: defaultValue.id,
+              data: values,
+            })
+          : await courseActionCreate({
+              data: values,
             });
-            return;
-          }
 
+        console.log(7, "result =>", result);
+        console.log(7, "data =>", result?.data);
+        console.log(7, "serverError =>", result?.serverError);
+        console.log(7, "validationErrors =>", result?.validationErrors);
+
+        if (result?.data) {
+          toast.success(result.data?.message);
+          router.push(`/admin/courses/${result.data.course.id}`);
+          router.refresh();
+          return;
+        }
+
+        if (result?.validationErrors) {
           toast.error("Some error occurred", {
-            description: result?.serverError as string,
+            description: `Error with ${
+              Object.keys(result?.validationErrors)[0]
+            }`,
           });
           return;
-        } else {
-          // create course
         }
+
+        toast.error("Some error occurred", {
+          description: result?.serverError as string,
+        });
+        return;
       }}
     >
       <FormField

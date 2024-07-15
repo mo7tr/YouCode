@@ -31,7 +31,6 @@ export default async function CoursePage({
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
   const page = Number(searchParams.page ?? 0);
-  console.log(0, "page => ", page);
 
   const session = await getRequiredAuthSession();
 
@@ -61,7 +60,7 @@ export default async function CoursePage({
               </TableHeader>
               <TableBody>
                 {course.users?.map((user) => (
-                  <TableRow>
+                  <TableRow key={user.id}>
                     <TableCell>
                       <Avatar className="rounded">
                         <AvatarFallback>{user.email?.[0]}</AvatarFallback>
