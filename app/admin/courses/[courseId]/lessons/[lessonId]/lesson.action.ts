@@ -11,7 +11,7 @@ const LessonActionEditDetailsSchema = z.object({
 });
 
 export const lessonActionEditDetails = authActionClient
-  .metadata({ actionName: "editLesson" })
+  .metadata({ actionName: "editLessonDetails" })
   .schema(LessonActionEditDetailsSchema)
   .action(async ({ parsedInput: { lessonId, data }, ctx: { userId } }) => {
     const lesson = await prisma.lesson.update({
@@ -25,7 +25,37 @@ export const lessonActionEditDetails = authActionClient
     });
 
     // to keep track in the front if an error occured
-    // throw new ActionError("Can't update course");
+    // throw new ActionError("Can't update lesson details");
+
+    return {
+      message: "Lesson updated successfully",
+      lesson,
+    };
+  });
+
+const LessonActionEditContentSchema = z.object({
+  lessonId: z.string(),
+  markdown: z.string(),
+});
+
+export const lessonActionEditContent = authActionClient
+  .metadata({ actionName: "editLessonContent" })
+  .schema(LessonActionEditContentSchema)
+  .action(async ({ parsedInput: { lessonId, markdown }, ctx: { userId } }) => {
+    const lesson = await prisma.lesson.update({
+      where: {
+        id: lessonId,
+        course: {
+          creatorId: userId,
+        },
+      },
+      data: {
+        content: markdown,
+      },
+    });
+
+    // to keep track in the front if an error occured
+    // throw new ActionError("Can't update lesson content");
 
     return {
       message: "Lesson updated successfully",

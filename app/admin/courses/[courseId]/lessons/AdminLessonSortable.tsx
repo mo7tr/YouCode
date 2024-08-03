@@ -18,7 +18,7 @@ import {
 } from "@dnd-kit/sortable";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useId, useState } from "react";
 import { toast } from "sonner";
 import { AdminLessonItemSortable } from "./AdminLessonItem";
 import { saveLessonMove } from "./lessons.action";
@@ -39,6 +39,7 @@ export const AdminLessonSortable = ({
     })
   );
   const router = useRouter();
+  const id = useId();
 
   const mutation = useMutation({
     mutationFn: async ({
@@ -58,28 +59,28 @@ export const AdminLessonSortable = ({
         },
       });
 
-      console.log(9, "result =>", result);
-      console.log(9, "data =>", result?.data);
-      console.log(9, "serverError =>", result?.serverError);
-      console.log(9, "validationErrors =>", result?.validationErrors);
+      const { data, serverError, validationErrors } = result || {};
 
-      if (result?.serverError) {
+      console.log(9, "result =>", result);
+      console.log(9, "data =>", data);
+      console.log(9, "serverError =>", serverError);
+      console.log(9, "validationErrors =>", validationErrors);
+
+      if (serverError) {
         toast.error("Some error occurred", {
           description: result?.serverError as string,
         });
         return;
       }
 
-      if (result?.validationErrors) {
+      if (validationErrors) {
         toast.error("Some error occurred", {
-          description: `Error with ${Object.keys(result?.validationErrors)[0]}`,
+          description: `Error with ${Object.keys(validationErrors)[0]}`,
         });
         return;
       }
 
-      if (!result?.data) return;
-
-      const data = result?.data;
+      if (!data) return;
 
       router.refresh();
 
@@ -130,6 +131,7 @@ export const AdminLessonSortable = ({
       sensors={sensors}
       collisionDetection={closestCenter}
       onDragEnd={handleDragEnd}
+      id={id}
     >
       <SortableContext
         disabled={mutation.isPending}
