@@ -5,8 +5,15 @@ import {
   LayoutTitle,
 } from "@/components/layout/layout";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { buttonVariants } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Table,
   TableBody,
@@ -17,6 +24,9 @@ import {
 } from "@/components/ui/table";
 import { Typography } from "@/components/ui/typography";
 import { getRequiredAuthSession } from "@/lib/auth";
+import prisma from "@/lib/prisma";
+import { Menu } from "lucide-react";
+import { revalidatePath } from "next/cache";
 import Link from "next/link";
 import { CoursePaginationButton } from "../../../../src/features/pagination/PaginationButton";
 import { getAdminCourse } from "./admin-course.query";
@@ -56,6 +66,8 @@ export default async function CoursePage({
                 <TableRow>
                   <TableHead>Image</TableHead>
                   <TableHead>Name</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead className="text-end">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -80,6 +92,67 @@ export default async function CoursePage({
                       >
                         {user.email}
                       </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant="secondary">
+                        {user.canceled ? "Canceled" : "Active"}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="flex flex-row-reverse">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger>
+                          <Button asChild size="sm" variant="secondary">
+                            <span>
+                              <Menu size={16} />
+                            </span>
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                          <DropdownMenuItem asChild>
+                            <form>
+                              <button
+                                formAction={async () => {
+                                  "use server";
+
+                                  const session =
+                                    await getRequiredAuthSession();
+
+                                  const courseId = params.courseId;
+                                  const userId = user.id;
+
+                                  const courseOnUser =
+                                    await prisma.courseOnUser.findFirst({
+                                      where: {
+                                        userId,
+                                        course: {
+                                          id: courseId,
+                                          creatorId: session?.user.id,
+                                        },
+                                      },
+                                    });
+
+                                  if (!courseOnUser) return;
+
+                                  await prisma.courseOnUser.update({
+                                    where: {
+                                      id: courseOnUser.id,
+                                    },
+                                    data: {
+                                      canceledAt: courseOnUser.canceledAt
+                                        ? null
+                                        : new Date(),
+                                    },
+                                  });
+
+                                  revalidatePath(`/admin/courses/${courseId}`);
+                                }}
+                              >
+                                {user.canceled ? "Activate" : "Cancel"}
+                              </button>
+                            </form>
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </TableCell>
                   </TableRow>
                 ))}
