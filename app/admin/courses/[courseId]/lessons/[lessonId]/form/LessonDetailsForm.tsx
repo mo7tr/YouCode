@@ -41,7 +41,7 @@ export const LessonDetail = ({ defaultValue }: LessonDetailFormProps) => {
       form={form}
       className="flex flex-col gap-4"
       onSubmit={async (values) => {
-        console.log(8, "Updating/Creating lesson...");
+        console.log("Updating/Creating lesson...");
 
         const result = await lessonActionEditDetails({
           lessonId: defaultValue.id,
@@ -49,11 +49,6 @@ export const LessonDetail = ({ defaultValue }: LessonDetailFormProps) => {
         });
 
         const { data, serverError, validationErrors } = result || {};
-
-        console.log(8, "result =>", result);
-        console.log(8, "data =>", result?.data);
-        console.log(8, "serverError =>", result?.serverError);
-        console.log(8, "validationErrors =>", result?.validationErrors);
 
         if (data) {
           toast.success(data.message);

@@ -19,7 +19,6 @@ export const CourseDialog = (props: CourseDialogProps) => {
   const pathname = usePathname();
 
   const isCoursePage = pathname?.split("/").filter(Boolean).length === 2;
-  console.log(0, "isCoursePage", isCoursePage);
 
   return (
     <Dialog

@@ -11,8 +11,6 @@ export default async function CoursePage({
     courseId: string;
   };
 }) {
-  console.log(0, "in the modal");
-
   const session = await getAuthSession();
   const course = await getCourse({
     courseId: params.courseId,
