@@ -8,7 +8,7 @@ import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { CourseType } from "./course.query";
-import { LessonItem } from "./lessons/[lessonId]/LessonItem";
+import { LessonItem } from "./lessons/LessonItem";
 
 export type CourseProps = {
   course: CourseType;
@@ -57,6 +57,7 @@ export const Course = ({ course, userId }: CourseProps) => {
           </CardContent>
         </Card>
       </div>
+      {course.isCanceled ? <p>You can't join this course.</p> : null}
       {!course.isCanceled && !course.isEnrolled && isLogin ? (
         <div>
           <form>

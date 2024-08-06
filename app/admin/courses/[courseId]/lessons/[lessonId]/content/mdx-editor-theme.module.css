@@ -26,5 +26,6 @@
   --baseTextContrast: hsl(var(--foreground) / 0.8);
 
   color: var(--baseText);
+  --basePageBg: hsl(var(--primary));
   background: var(--baseBg);
 }

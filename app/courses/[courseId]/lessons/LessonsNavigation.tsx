@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getAuthSession } from "@/lib/auth";
-import { getCourse } from "../../course.query";
+import { getCourse } from "../course.query";
 import { LessonItem } from "./LessonItem";
 
 export type LessonsNavigationProps = {
@@ -25,7 +25,7 @@ export const LessonsNavigation = async (props: LessonsNavigationProps) => {
       </CardHeader>
       <CardContent className="flex flex-col gap-2">
         {course.lessons.map((lesson) => (
-          <LessonItem lesson={lesson} />
+          <LessonItem lesson={lesson} key={lesson.id} />
         ))}
       </CardContent>
     </Card>

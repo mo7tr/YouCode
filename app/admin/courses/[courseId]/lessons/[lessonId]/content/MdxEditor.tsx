@@ -39,11 +39,6 @@ export const MdxEditor = ({ lessonId, markdown }: MdxEditorProps) => {
 
     const { data, serverError, validationErrors } = result || {};
 
-    console.log(9, "result =>", result);
-    console.log(9, "data =>", data);
-    console.log(9, "serverError =>", serverError);
-    console.log(9, "validationErrors =>", validationErrors);
-
     if (serverError) {
       toast.error(serverError);
       setSyncState("not-sync");
