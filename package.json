@@ -49,6 +49,7 @@
     "react-dom": "^18",
     "react-hook-form": "^7.51.5",
     "react-markdown": "^9.0.1",
+    "recharts": "2.13.0-alpha.4",
     "rehype-prism-plus": "^2.0.0",
     "sonner": "^1.4.41",
     "tailwind-merge": "^2.3.0",
