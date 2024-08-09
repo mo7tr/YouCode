@@ -71,6 +71,7 @@ model User {
 
 model Course {
   id           String   @id @default(cuid())
+  state        CourseState @default(DRAFT)
   name         String
   presentation String // markdown
   image        String
@@ -80,6 +81,11 @@ model Course {
   creator User           @relation(fields: [creatorId], references: [id])
   lessons Lesson[]
   users   CourseOnUser[]
+}
+
+enum CourseState {
+  DRAFT
+  PUBLISHED
 }
 
 model Lesson {
